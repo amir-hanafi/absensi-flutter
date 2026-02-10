@@ -1,6 +1,7 @@
 import 'package:aplikasi_absen_ujikom/page/qr_generator_page.dart';
 import 'package:aplikasi_absen_ujikom/page/qr_scanner_page.dart';
 import 'package:aplikasi_absen_ujikom/page/validation_result_page.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:flutter/material.dart';
 
 class AttenPage extends StatefulWidget {
@@ -11,6 +12,10 @@ class AttenPage extends StatefulWidget {
 }
 
 class _AttenPageState extends State<AttenPage> {
+  double schoolLat = -6.825286932039216;
+  double schoolLng = 107.13709238539803;
+  double allowedRadius = 100; // meter
+
   bool validateToken(String token) {
     try {
       final parts = token.split("_");
@@ -37,17 +42,69 @@ class _AttenPageState extends State<AttenPage> {
     }
   }
 
+  bool validateLocation(Position position) {
+    double distance = Geolocator.distanceBetween(
+      schoolLat,
+      schoolLng,
+      position.latitude,
+      position.longitude,
+    );
 
-  void handleScanResult(String token) {
-    final isValid = validateToken(token);
+    print("Jarak dari sekolah: $distance meter");
+
+    return distance <= allowedRadius;
+  }
+
+
+  Future<Position> getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    /// Cek GPS aktif
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      throw Exception("GPS tidak aktif");
+    }
+
+    /// Cek permission
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      throw Exception("Permission ditolak permanen");
+    }
+
+    return await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+  }
+
+
+  void handleScanResult(String token) async {
+    final tokenValid = validateToken(token);
+
+    bool locationValid = false;
+
+    try {
+      final position = await getCurrentLocation();
+      locationValid = validateLocation(position);
+    } catch (e) {
+      print("Error lokasi: $e");
+    }
+
+    final finalValid = tokenValid && locationValid;
 
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => ValidationResultPage(isValid: isValid),
+        builder: (_) => ValidationResultPage(
+          isValid: finalValid),
       ),
     );
   }
+
 
 
 
