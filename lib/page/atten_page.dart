@@ -1,3 +1,4 @@
+import 'package:aplikasi_absen_ujikom/page/gps_loading_page.dart';
 import 'package:aplikasi_absen_ujikom/page/qr_generator_page.dart';
 import 'package:aplikasi_absen_ujikom/page/qr_scanner_page.dart';
 import 'package:aplikasi_absen_ujikom/page/validation_result_page.dart';
@@ -12,9 +13,9 @@ class AttenPage extends StatefulWidget {
 }
 
 class _AttenPageState extends State<AttenPage> {
-  double schoolLat = -6.825286932039216;
-  double schoolLng = 107.13709238539803;
-  double allowedRadius = 100; // meter
+  double schoolLat = -6.831728364765115;
+  double schoolLng = 107.17772474889507;
+  double allowedRadius = 50; // meter
 
   bool validateToken(String token) {
     try {
@@ -51,45 +52,63 @@ class _AttenPageState extends State<AttenPage> {
     );
 
     print("Jarak dari sekolah: $distance meter");
+    print("Lat user: ${position.latitude}");
+    print("Lng user: ${position.longitude}");
+    print("Lat sekolah: $schoolLat");
+    print("Lng sekolah: $schoolLng");
+
 
     return distance <= allowedRadius;
   }
 
 
-  Future<Position> getCurrentLocation() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+  // Future<Position> getCurrentLocation() async {
+  //   bool serviceEnabled;
+  //   LocationPermission permission;
 
-    /// Cek GPS aktif
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      throw Exception("GPS tidak aktif");
-    }
+  //   /// Cek GPS aktif
+  //   serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //   if (!serviceEnabled) {
+  //     throw Exception("GPS tidak aktif");
+  //   }
 
-    /// Cek permission
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-    }
+  //   /// Cek permission
+  //   permission = await Geolocator.checkPermission();
+  //   if (permission == LocationPermission.denied) {
+  //     permission = await Geolocator.requestPermission();
+  //   }
 
-    if (permission == LocationPermission.deniedForever) {
-      throw Exception("Permission ditolak permanen");
-    }
+  //   if (permission == LocationPermission.deniedForever) {
+  //     throw Exception("Permission ditolak permanen");
+  //   }
 
-    return await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-  }
+  //   return await Geolocator.getCurrentPosition(
+  //     desiredAccuracy: LocationAccuracy.high,
+  //   );
+  // }
 
 
+  
   void handleScanResult(String token) async {
     final tokenValid = validateToken(token);
 
     bool locationValid = false;
 
     try {
-      final position = await getCurrentLocation();
-      locationValid = validateLocation(position);
+      /// 🔄 Buka loading GPS
+      final position = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => const GpsLoadingPage(),
+        ),
+      );
+
+      if (position != null) {
+        locationValid = validateLocation(position);
+      } else {
+        print("Gagal mengambil lokasi");
+      }
+
     } catch (e) {
       print("Error lokasi: $e");
     }
@@ -100,10 +119,12 @@ class _AttenPageState extends State<AttenPage> {
       context,
       MaterialPageRoute(
         builder: (_) => ValidationResultPage(
-          isValid: finalValid),
+          isValid: finalValid,
+        ),
       ),
     );
   }
+
 
 
 
