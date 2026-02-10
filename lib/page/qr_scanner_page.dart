@@ -1,37 +1,68 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
-class QRScannerPage extends StatefulWidget {
+class QrScannerPage extends StatefulWidget {
+  const QrScannerPage({super.key});
+
   @override
-  _QRScannerPageState createState() => _QRScannerPageState();
+  State<QrScannerPage> createState() => _QrScannerPageState();
 }
 
-class _QRScannerPageState extends State<QRScannerPage> {
-  MobileScannerController controller = MobileScannerController();
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
+class _QrScannerPageState extends State<QrScannerPage> {
+  String? result;
+  bool isScanned = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("QR Scanner"),
+        title: const Text("Scan QR Absensi"),
       ),
-      body: MobileScanner(
-        controller: controller,
-        onDetect: (barcodeCapture) {
-          final barcode = barcodeCapture.barcodes.first;
+      body: Column(
+        children: [
+          Expanded(
+            flex: 4,
+            child: MobileScanner(
+              onDetect: (BarcodeCapture capture) {
+                if (isScanned) return;
 
-          if (barcode.rawValue != null) {
-            controller.stop();
+                final List<Barcode> barcodes = capture.barcodes;
 
-            Navigator.pop(context, barcode.rawValue);
-          }
-        },
+                for (final barcode in barcodes) {
+                  final String? code = barcode.rawValue;
+
+                  if (code != null) {
+                    setState(() {
+                      result = code;
+                      isScanned = true;
+                    });
+
+                    print("Hasil scan: $code");
+
+                    Future.delayed(
+                      const Duration(milliseconds: 500),
+                      () {
+                        Navigator.pop(context, code);
+                      },
+                    );
+
+                    break;
+                  }
+                }
+              },
+            ),
+          ),
+
+          Expanded(
+            flex: 1,
+            child: Center(
+              child: Text(
+                result ?? "Scan QR untuk absen",
+                style: const TextStyle(fontSize: 16),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

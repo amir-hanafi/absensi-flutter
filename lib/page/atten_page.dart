@@ -17,17 +17,19 @@ class AttenPage extends StatelessWidget {
           children: [
             const Text('Test'),
             ElevatedButton(
-              child: const Text("Scan QR"),
               onPressed: () async {
                 final result = await Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => QRScannerPage(),
+                    builder: (context) => const QrScannerPage(),
                   ),
                 );
 
-                print("Hasil scan: $result");
+                if (result != null) {
+                  print("QR diterima di AttenPage: $result");
+                }
               },
+              child: const Text("Scan QR"),
             ),
           ],
         ),
