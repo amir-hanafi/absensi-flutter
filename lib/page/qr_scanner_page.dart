@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:geolocator/geolocator.dart';
 
 class QrScannerPage extends StatefulWidget {
   const QrScannerPage({super.key});
@@ -15,9 +18,7 @@ class _QrScannerPageState extends State<QrScannerPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Scan QR Absensi"),
-      ),
+      appBar: AppBar(title: const Text("Scan QR Absensi")),
       body: Column(
         children: [
           Expanded(
@@ -37,14 +38,7 @@ class _QrScannerPageState extends State<QrScannerPage> {
                       isScanned = true;
                     });
 
-                    print("Hasil scan: $code");
-
-                    Future.delayed(
-                      const Duration(milliseconds: 500),
-                      () {
-                        Navigator.pop(context, code);
-                      },
-                    );
+                    Navigator.pop(context, code);
 
                     break;
                   }

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class QrGeneratorPage extends StatefulWidget {
   const QrGeneratorPage({super.key});
@@ -32,58 +34,32 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
   }
 
   /// 🔹 GENERATE TOKEN DINAMIS 30 MENIT
-  void generateToken() {
-    final now = DateTime.now();
-
-    int minute = now.minute < 30 ? 0 : 30;
-
-    final roundedTime = DateTime(
-      now.year,
-      now.month,
-      now.day,
-      now.hour,
-      minute,
+  Future<void> generateToken() async {
+    final response = await http.post(
+      Uri.parse("http://192.168.1.16:8000/api/generate-qr/1"),
     );
 
-    final newToken =
-        "ABSEN_${roundedTime.year}"
-        "${roundedTime.month.toString().padLeft(2, '0')}"
-        "${roundedTime.day.toString().padLeft(2, '0')}_"
-        "${roundedTime.hour.toString().padLeft(2, '0')}"
-        "${minute.toString().padLeft(2, '0')}";
+    print(response.body);
+    final data = jsonDecode(response.body);
 
-    /// Kalau token berubah → update QR
-    if (newToken != qrData) {
-      setState(() {
-        qrData = newToken;
-      });
-
-      print("TOKEN QR UPDATE: $qrData");
-    }
+    setState(() {
+      qrData = data["token"];
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("QR Generator Absensi"),
-      ),
+      appBar: AppBar(title: const Text("QR Generator Absensi")),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            if (qrData.isNotEmpty)
-              QrImageView(
-                data: qrData,
-                size: 250,
-              ),
+            if (qrData.isNotEmpty) QrImageView(data: qrData, size: 250),
 
             const SizedBox(height: 20),
 
-            Text(
-              qrData,
-              style: const TextStyle(fontSize: 16),
-            ),
+            Text(qrData, style: const TextStyle(fontSize: 16)),
 
             const SizedBox(height: 10),
 

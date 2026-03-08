@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 class ValidationResultPage extends StatelessWidget {
   final bool isValid;
+  final String message;
 
   const ValidationResultPage({
     super.key,
     required this.isValid,
+    required this.message,
   });
 
   @override
