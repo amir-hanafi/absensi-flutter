@@ -35,8 +35,8 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
 
   /// 🔹 GENERATE TOKEN DINAMIS 30 MENIT
   Future<void> generateToken() async {
-    final response = await http.post(
-      Uri.parse("http://192.168.1.16:8000/api/generate-qr/1"),
+    final response = await http.get(
+      Uri.parse("http://192.168.1.16:8000/api/qr-token/7"),
     );
 
     print(response.body);
