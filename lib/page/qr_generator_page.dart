@@ -36,7 +36,7 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
   /// 🔹 GENERATE TOKEN DINAMIS 30 MENIT
   Future<void> generateToken() async {
     final response = await http.get(
-      Uri.parse("http://192.168.1.16:8000/api/qr-token/7"),
+      Uri.parse("http://192.168.1.16:8000/api/qr-token-current")
     );
 
     print(response.body);
@@ -50,7 +50,7 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("QR Generator Absensi")),
+      appBar: AppBar(),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

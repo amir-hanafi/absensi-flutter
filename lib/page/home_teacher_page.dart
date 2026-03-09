@@ -1,12 +1,13 @@
-import 'package:aplikasi_absen_ujikom/page/atten_page.dart';
+import 'package:aplikasi_absen_ujikom/page/atten_student_page.dart';
+import 'package:aplikasi_absen_ujikom/page/atten_teacher_page.dart';
 import 'package:flutter/material.dart';
 import 'package:aplikasi_absen_ujikom/page/profile_page.dart';
 
-class HomePage extends StatelessWidget {
+class HomeTeacherPage extends StatelessWidget {
 
   final String username;
 
-  const HomePage({
+  const HomeTeacherPage({
     super.key,
     required this.username,
   });
@@ -19,7 +20,7 @@ class HomePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-       
+      
         backgroundColor: Colors.blueGrey,
       ),
 
@@ -62,7 +63,7 @@ class HomePage extends StatelessWidget {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => AttenPage(),
+                        builder: (_) => AttenTeacherPage(),
                       ),
                     );
                   },

@@ -13,6 +13,7 @@ dependencies:
   qr_flutter: ^4.1.0
   geolocator: ^11.0.0
   http: ^1.2.0
+  shared_preferences: ^2.5.4
 
 
 dev_dependencies:
@@ -22,3 +23,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/

@@ -7,56 +7,16 @@ import 'package:aplikasi_absen_ujikom/page/gps_loading_page.dart';
 import 'package:aplikasi_absen_ujikom/page/qr_scanner_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AttenPage extends StatefulWidget {
-  const AttenPage({super.key});
+class AttenTeacherPage extends StatefulWidget {
+  const AttenTeacherPage({super.key});
 
   @override
-  State<AttenPage> createState() => _AttenPageState();
+  State<AttenTeacherPage> createState() => _AttenTeacherPageState();
 }
 
-class _AttenPageState extends State<AttenPage> {
-  Future<void> sendAttendance({
-    required String token,
-    required double latitude,
-    required double longitude,
-  }) async {
-    final url = Uri.parse("http://192.168.1.16:8000/api/scan-qr");
-
-    final prefs = await SharedPreferences.getInstance();
-    String? loginToken = prefs.getString("token");
-
-    final response = await http.post(
-      url,
-      headers: {
-        "Accept": "application/json",
-        "Authorization": "Bearer $loginToken",
-      },
-      body: {
-        "token": token,
-        "latitude": latitude.toString(),
-        "longitude": longitude.toString(),
-      },
-    );
-
-    print("LOGIN TOKEN: $loginToken");
-    print("QR TOKEN: $token");
-    print("LAT: $latitude");
-    print("LNG: $longitude");
-    print("STATUS CODE: ${response.statusCode}");
-    print("BODY: ${response.body}");
-
-    final data = jsonDecode(response.body);
-
-    bool valid = data["status"] == "valid";
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) =>
-            ValidationResultPage(isValid: valid, message: data["message"]),
-      ),
-    );
-  }
+class _AttenTeacherPageState extends State<AttenTeacherPage> {
+  
+  
 
   String tanggal = "-";
   String pukul = "-";
@@ -98,7 +58,10 @@ class _AttenPageState extends State<AttenPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.blueGrey),
+      appBar: AppBar(
+   
+        backgroundColor: Colors.blueGrey,
+      ),
 
       body: SingleChildScrollView(
         child: Padding(
@@ -136,6 +99,37 @@ class _AttenPageState extends State<AttenPage> {
               const SizedBox(height: 20),
 
               /// SCAN CARD
+              Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+
+                child: Container(
+                  height: 260,
+                  padding: const EdgeInsets.all(20),
+
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      /// gambar ilustrasi
+                      Image.asset("assets/images/scan_qr.png", height: 160),
+
+                      const SizedBox(height: 10),
+
+                      const Text(
+                        "Scan QR Guru untuk Absen",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 20),
 
               /// BUTTON SCAN
               SizedBox(
@@ -143,57 +137,11 @@ class _AttenPageState extends State<AttenPage> {
 
                 child: ElevatedButton(
                   onPressed: () async {
-                    /// 1 scan QR
-                    final token = await Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const QrScannerPage()),
-                    );
-
-                    if (token == null) return;
-
-                    /// 2 ambil GPS
-                    final position = await Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const GpsLoadingPage()),
-                    );
-
-                    if (position == null) return;
-
-                    double latitude = position.latitude;
-                    double longitude = position.longitude;
-
-                    /// 3 kirim ke Laravel
-                    await sendAttendance(
-                      token: token,
-                      latitude: latitude,
-                      longitude: longitude,
-                    );
-                  },
-
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green[400],
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-
-                  child: const Text(
-                    "Scan untuk Absen",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              SizedBox(
-                width: double.infinity,
-
-                child: ElevatedButton(
-                  onPressed: () async {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) => QrGeneratorPage()),
+                      MaterialPageRoute(
+                        builder: (_) => QrGeneratorPage(),
+                      ),
                     );
                   },
 

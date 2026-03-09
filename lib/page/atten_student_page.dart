@@ -1,4 +1,3 @@
-import 'package:aplikasi_absen_ujikom/page/qr_generator_page.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:aplikasi_absen_ujikom/page/validation_result_page.dart';
@@ -7,14 +6,14 @@ import 'package:aplikasi_absen_ujikom/page/gps_loading_page.dart';
 import 'package:aplikasi_absen_ujikom/page/qr_scanner_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AttenPage extends StatefulWidget {
-  const AttenPage({super.key});
+class AttenStudentPage extends StatefulWidget {
+  const AttenStudentPage({super.key});
 
   @override
-  State<AttenPage> createState() => _AttenPageState();
+  State<AttenStudentPage> createState() => _AttenStudentPageState();
 }
 
-class _AttenPageState extends State<AttenPage> {
+class _AttenStudentPageState extends State<AttenStudentPage> {
   Future<void> sendAttendance({
     required String token,
     required double latitude,
@@ -136,6 +135,37 @@ class _AttenPageState extends State<AttenPage> {
               const SizedBox(height: 20),
 
               /// SCAN CARD
+              Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+
+                child: Container(
+                  height: 260,
+                  padding: const EdgeInsets.all(20),
+
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      /// gambar ilustrasi
+                      Image.asset("assets/images/scan_qr.png", height: 160),
+
+                      const SizedBox(height: 10),
+
+                      const Text(
+                        "Scan QR Guru untuk Absen",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 20),
 
               /// BUTTON SCAN
               SizedBox(
@@ -180,33 +210,6 @@ class _AttenPageState extends State<AttenPage> {
 
                   child: const Text(
                     "Scan untuk Absen",
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-
-              SizedBox(
-                width: double.infinity,
-
-                child: ElevatedButton(
-                  onPressed: () async {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => QrGeneratorPage()),
-                    );
-                  },
-
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green[400],
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-
-                  child: const Text(
-                    "Qr absen",
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                   ),
                 ),

@@ -1,4 +1,4 @@
-import 'package:aplikasi_absen_ujikom/page/home_page.dart';
+import 'package:aplikasi_absen_ujikom/page/login_page.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -12,7 +12,7 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const HomePage(), // pindah ke halaman lain
+      home: const LoginPage(), // pindah ke halaman lain
     );
   }
 }
