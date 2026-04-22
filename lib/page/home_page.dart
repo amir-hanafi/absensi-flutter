@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:intl/intl.dart';
 
 import 'package:aplikasi_absen_ujikom/page/atten_page.dart';
 import 'package:aplikasi_absen_ujikom/page/marketplace_page.dart';
@@ -222,7 +223,7 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text("rekap absensi"),
-                      Text("${DateTime.now().month}/${DateTime.now().year}"),
+                      Text(DateFormat('MMMM yyyy', 'id_ID').format(DateTime.now())),
                     ],
                   ),
 
