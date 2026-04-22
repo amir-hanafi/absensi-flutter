@@ -1,34 +1,26 @@
 import 'package:aplikasi_absen_ujikom/page/atten_page.dart';
+import 'package:aplikasi_absen_ujikom/page/marketplace_page.dart';
 import 'package:flutter/material.dart';
 import 'package:aplikasi_absen_ujikom/page/profile_page.dart';
 
 class HomePage extends StatelessWidget {
-
   final String username;
 
-  const HomePage({
-    super.key,
-    required this.username,
-  });
+  const HomePage({super.key, required this.username});
 
   @override
   Widget build(BuildContext context) {
-
     final screenWidth = MediaQuery.of(context).size.width;
     final isSmallScreen = screenWidth < 600;
 
     return Scaffold(
-      appBar: AppBar(
-       
-        backgroundColor: Colors.blueGrey,
-      ),
+      appBar: AppBar(backgroundColor: Colors.blueGrey),
 
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
 
         child: Column(
           children: [
-
             const SizedBox(height: 20),
 
             /// WELCOME TEXT
@@ -53,7 +45,6 @@ class HomePage extends StatelessWidget {
               mainAxisSpacing: 16,
 
               children: [
-
                 /// ABSEN
                 _menuCard(
                   icon: Icons.check_circle,
@@ -61,9 +52,7 @@ class HomePage extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (_) => AttenPage(),
-                      ),
+                      MaterialPageRoute(builder: (_) => AttenPage()),
                     );
                   },
                 ),
@@ -75,14 +64,10 @@ class HomePage extends StatelessWidget {
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (_) => ProfilePage(),
-                      ),
+                      MaterialPageRoute(builder: (_) => ProfilePage()),
                     );
                   },
                 ),
-
-                
 
                 /// MENU 4
                 _menuCard(
@@ -91,13 +76,23 @@ class HomePage extends StatelessWidget {
                   onTap: () {},
                 ),
 
-
+                // _menuCard(
+                //   icon: Icons.analytics,
+                //   title: "Reports",
+                //   onTap: () {},
+                // ),
                 _menuCard(
-                  icon: Icons.analytics,
-                  title: "Reports",
-                  onTap: () {},
+                  icon: Icons.shopping_cart,
+                  title: "MarketPoin",
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MarketplacePage(),
+                      ),
+                    );
+                  },
                 ),
-
               ],
             ),
 
@@ -113,10 +108,7 @@ class HomePage extends StatelessWidget {
 
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Text("Absen Masuk"),
-                  Text("Absen Pulang"),
-                ],
+                children: [Text("Absen Masuk"), Text("Absen Pulang")],
               ),
             ),
 
@@ -134,7 +126,6 @@ class HomePage extends StatelessWidget {
               child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -161,26 +152,21 @@ class HomePage extends StatelessWidget {
                 ],
               ),
             ),
-
           ],
         ),
       ),
     );
   }
 
-
   Widget _menuCard({
     required IconData icon,
     required String title,
     required VoidCallback onTap,
   }) {
-
     return Card(
       elevation: 4,
 
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
 
       child: InkWell(
         onTap: onTap,
@@ -191,12 +177,7 @@ class HomePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
 
           children: [
-
-            Icon(
-              icon,
-              size: 40,
-              color: Colors.blueGrey,
-            ),
+            Icon(icon, size: 40, color: Colors.blueGrey),
 
             const SizedBox(height: 10),
 
@@ -207,7 +188,6 @@ class HomePage extends StatelessWidget {
                 color: Colors.blueGrey,
               ),
             ),
-
           ],
         ),
       ),

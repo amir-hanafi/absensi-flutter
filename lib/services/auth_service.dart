@@ -3,7 +3,8 @@ import 'package:http/http.dart' as http;
 
 class AuthService {
   // ganti sesuai IP Laravel kamu
-  static const String baseUrl = "http://192.168.1.16:8000/api";
+  // static const String baseUrl = "http://10.77.86.197:8000/api";
+  static const String baseUrl = "http://192.168.1.5:8000/api";
 
   static Future<Map<String, dynamic>> login({
     required String identifier,

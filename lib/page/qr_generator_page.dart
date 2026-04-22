@@ -36,7 +36,8 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
   /// 🔹 GENERATE TOKEN DINAMIS 30 MENIT
   Future<void> generateToken() async {
     final response = await http.get(
-      Uri.parse("http://192.168.1.16:8000/api/qr-token-current")
+      // Uri.parse("http://10.77.86.197:8000/api/qr-token-current")
+      Uri.parse("http://192.168.1.5:8000/api/qr-token-current")
     );
 
     print(response.body);
@@ -64,7 +65,7 @@ class _QrGeneratorPageState extends State<QrGeneratorPage> {
             const SizedBox(height: 10),
 
             const Text(
-              "QR otomatis berubah tiap 30 menit",
+              "QR otomatis berubah tiap 5 menit",
               style: TextStyle(color: Colors.grey),
             ),
           ],

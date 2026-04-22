@@ -15,9 +15,6 @@ class AttenTeacherPage extends StatefulWidget {
 }
 
 class _AttenTeacherPageState extends State<AttenTeacherPage> {
-  
-  
-
   String tanggal = "-";
   String pukul = "-";
   String jamPelajaran = "-";
@@ -30,7 +27,8 @@ class _AttenTeacherPageState extends State<AttenTeacherPage> {
     print("TOKEN DARI PREFS: $token");
 
     final response = await http.get(
-      Uri.parse("http://192.168.1.16:8000/api/jadwal-sekarang"),
+      // Uri.parse("http://10.77.86.197:8000/api/jadwal-sekarang"),
+      Uri.parse("http://192.168.1.5:8000/api/jadwal-sekarang"),
       headers: {"Accept": "application/json", "Authorization": "Bearer $token"},
     );
 
@@ -58,10 +56,7 @@ class _AttenTeacherPageState extends State<AttenTeacherPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-   
-        backgroundColor: Colors.blueGrey,
-      ),
+      appBar: AppBar(backgroundColor: Colors.blueGrey),
 
       body: SingleChildScrollView(
         child: Padding(
@@ -139,9 +134,7 @@ class _AttenTeacherPageState extends State<AttenTeacherPage> {
                   onPressed: () async {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (_) => QrGeneratorPage(),
-                      ),
+                      MaterialPageRoute(builder: (_) => QrGeneratorPage()),
                     );
                   },
 

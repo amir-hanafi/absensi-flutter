@@ -19,7 +19,8 @@ class _AttenStudentPageState extends State<AttenStudentPage> {
     required double latitude,
     required double longitude,
   }) async {
-    final url = Uri.parse("http://192.168.1.16:8000/api/scan-qr");
+    // final url = Uri.parse("http://10.77.86.197:8000/api/scan-qr");
+    final url = Uri.parse("http://192.168.1.5:8000/api/scan-qr");
 
     final prefs = await SharedPreferences.getInstance();
     String? loginToken = prefs.getString("token");
@@ -69,7 +70,11 @@ class _AttenStudentPageState extends State<AttenStudentPage> {
     print("TOKEN DARI PREFS: $token");
 
     final response = await http.get(
-      Uri.parse("http://192.168.1.16:8000/api/jadwal-sekarang"),
+      //hp
+      // Uri.parse("http://10.77.86.197:8000/api/jadwal-sekarang"),
+
+      //wifi
+      Uri.parse("http://192.168.1.5:8000/api/jadwal-sekarang"),
       headers: {"Accept": "application/json", "Authorization": "Bearer $token"},
     );
 
