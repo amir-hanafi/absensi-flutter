@@ -1,13 +1,95 @@
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:aplikasi_absen_ujikom/page/atten_page.dart';
 import 'package:aplikasi_absen_ujikom/page/marketplace_page.dart';
 import 'package:aplikasi_absen_ujikom/page/schedule_page.dart';
-import 'package:flutter/material.dart';
 import 'package:aplikasi_absen_ujikom/page/profile_page.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   final String username;
 
   const HomePage({super.key, required this.username});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int hadir = 0;
+  int izin = 0;
+  int sakit = 0;
+  int alpha = 0;
+
+  String jamMasuk = "-";
+  String jamPulang = "-";
+
+  final String baseUrl = "http://192.168.1.5:8000/api";
+
+  @override
+  void initState() {
+    super.initState();
+    fetchJamSekolah();
+    fetchRekapAbsensi();
+  }
+
+  // ================= JAM SEKOLAH =================
+  Future<void> fetchJamSekolah() async {
+    try {
+      final response = await http.get(
+        Uri.parse("$baseUrl/jam-sekolah"),
+        headers: {"Accept": "application/json"},
+      );
+
+      debugPrint("JAM SEKOLAH: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        setState(() {
+          jamMasuk = data['jam_masuk']?.toString() ?? "-";
+          jamPulang = data['jam_pulang']?.toString() ?? "-";
+        });
+      }
+    } catch (e) {
+      debugPrint("Error jam sekolah: $e");
+    }
+  }
+
+  // ================= REKAP ABSENSI =================
+  Future<void> fetchRekapAbsensi() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      String? token = prefs.getString("token");
+
+      final response = await http.get(
+        Uri.parse("$baseUrl/rekap-absensi"),
+        headers: {
+          "Accept": "application/json",
+          "Authorization": "Bearer $token",
+        },
+      );
+
+      debugPrint("REKAP: ${response.body}");
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+
+        setState(() {
+          hadir = int.tryParse(data['Hadir']?.toString() ?? "0") ?? 0;
+          izin  = int.tryParse(data['Ijin']?.toString() ?? "0") ?? 0;
+          sakit = int.tryParse(data['Sakit']?.toString() ?? "0") ?? 0;
+          alpha = int.tryParse(data['Alpha']?.toString() ?? "0") ?? 0;
+        });
+      } else {
+        debugPrint("ERROR STATUS: ${response.statusCode}");
+      }
+    } catch (e) {
+      debugPrint("Error rekap: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +97,10 @@ class HomePage extends StatelessWidget {
     final isSmallScreen = screenWidth < 600;
 
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.blueGrey),
+      appBar: AppBar(
+        backgroundColor: Colors.blueGrey,
+        title: const Text("Home"),
+      ),
 
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -24,9 +109,9 @@ class HomePage extends StatelessWidget {
           children: [
             const SizedBox(height: 20),
 
-            /// WELCOME TEXT
+            /// WELCOME
             Text(
-              "Welcome, $username",
+              "Welcome, ${widget.username}",
               style: const TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -36,75 +121,56 @@ class HomePage extends StatelessWidget {
 
             const SizedBox(height: 20),
 
-            /// GRID MENU
+            /// MENU
             GridView.count(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-
               crossAxisCount: isSmallScreen ? 2 : 4,
               crossAxisSpacing: 16,
               mainAxisSpacing: 16,
 
               children: [
-                /// ABSEN
                 _menuCard(
                   icon: Icons.check_circle,
                   title: "Absen",
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => AttenPage()),
-                    );
-                  },
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => AttenPage()),
+                  ),
                 ),
 
-                /// PROFILE
                 _menuCard(
                   icon: Icons.person,
                   title: "Profile",
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => ProfilePage()),
-                    );
-                  },
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => ProfilePage()),
+                  ),
                 ),
 
-                /// MENU 4
                 _menuCard(
                   icon: Icons.schedule,
                   title: "Schedule",
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => SchedulePage()),
-                    );
-                  },
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => SchedulePage()),
+                  ),
                 ),
 
-                // _menuCard(
-                //   icon: Icons.analytics,
-                //   title: "Reports",
-                //   onTap: () {},
-                // ),
                 _menuCard(
                   icon: Icons.shopping_cart,
                   title: "MarketPoin",
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MarketplacePage(),
-                      ),
-                    );
-                  },
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => MarketplacePage()),
+                  ),
                 ),
               ],
             ),
 
             const SizedBox(height: 30),
 
-            /// ABSEN MASUK / PULANG
+            /// JAM MASUK & PULANG
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
@@ -112,9 +178,30 @@ class HomePage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
 
-              child: const Row(
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [Text("Absen Masuk"), Text("Absen Pulang")],
+                children: [
+                  Column(
+                    children: [
+                      const Text("Jam Masuk"),
+                      const SizedBox(height: 5),
+                      Text(
+                        jamMasuk == "-" ? "Loading..." : jamMasuk,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      const Text("Jam Pulang"),
+                      const SizedBox(height: 5),
+                      Text(
+                        jamPulang == "-" ? "Loading..." : jamPulang,
+                        style: const TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
 
@@ -123,38 +210,34 @@ class HomePage extends StatelessWidget {
             /// ABSENSI BULANAN
             Container(
               padding: const EdgeInsets.all(16),
-
               decoration: BoxDecoration(
                 color: Colors.grey[300],
                 borderRadius: BorderRadius.circular(10),
               ),
 
-              child: const Column(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text("Absensi Bulanan"),
-                      Text("Februari 2026 ▼"),
+                      const Text("rekap absensi"),
+                      Text("${DateTime.now().month}/${DateTime.now().year}"),
                     ],
                   ),
 
-                  SizedBox(height: 15),
+                  const SizedBox(height: 15),
 
-                  Text("Hadir"),
-                  SizedBox(height: 8),
+                  Text("Hadir: $hadir"),
+                  const SizedBox(height: 8),
 
-                  Text("Izin"),
-                  SizedBox(height: 8),
+                  Text("Izin: $izin"),
+                  const SizedBox(height: 8),
 
-                  Text("Sakit"),
-                  SizedBox(height: 8),
+                  Text("Sakit: $sakit"),
+                  const SizedBox(height: 8),
 
-                  Text("Terlambat"),
-                  SizedBox(height: 8),
-
-                  Text("Alpha"),
+                  Text("Alpha: $alpha"),
                 ],
               ),
             ),
@@ -171,22 +254,17 @@ class HomePage extends StatelessWidget {
   }) {
     return Card(
       elevation: 4,
-
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
 
       child: InkWell(
         onTap: onTap,
-
         borderRadius: BorderRadius.circular(12),
 
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-
           children: [
             Icon(icon, size: 40, color: Colors.blueGrey),
-
             const SizedBox(height: 10),
-
             Text(
               title,
               style: const TextStyle(

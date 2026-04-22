@@ -122,8 +122,8 @@ class HomeTeacherPage extends StatelessWidget {
               child: const Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Text("Absen Masuk"),
-                  Text("Absen Pulang"),
+                  Text("jam Masuk"),
+                  Text("jam Pulang"),
                 ],
               ),
             ),
