@@ -1,5 +1,7 @@
 import 'package:aplikasi_absen_ujikom/page/atten_student_page.dart';
 import 'package:aplikasi_absen_ujikom/page/atten_teacher_page.dart';
+import 'package:aplikasi_absen_ujikom/page/schedule_page.dart';
+import 'package:aplikasi_absen_ujikom/page/schedule_teacher_page.dart';
 import 'package:flutter/material.dart';
 import 'package:aplikasi_absen_ujikom/page/profile_page.dart';
 
@@ -89,15 +91,20 @@ class HomeTeacherPage extends StatelessWidget {
                 _menuCard(
                   icon: Icons.schedule,
                   title: "Schedule",
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ScheduleTeacherPage()),
+                    );
+                  },
                 ),
 
 
-                _menuCard(
-                  icon: Icons.analytics,
-                  title: "Reports",
-                  onTap: () {},
-                ),
+                // _menuCard(
+                //   icon: Icons.analytics,
+                //   title: "Reports",
+                //   onTap: () {},
+                // ),
 
               ],
             ),

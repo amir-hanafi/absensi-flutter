@@ -1,4 +1,7 @@
 import 'package:aplikasi_absen_ujikom/page/atten_student_page.dart';
+import 'package:aplikasi_absen_ujikom/page/marketplace_page.dart';
+import 'package:aplikasi_absen_ujikom/page/schedule_page.dart';
+import 'package:aplikasi_absen_ujikom/page/schedule_student_page.dart';
 import 'package:flutter/material.dart';
 import 'package:aplikasi_absen_ujikom/page/profile_page.dart';
 
@@ -88,14 +91,32 @@ class HomeStudentPage extends StatelessWidget {
                 _menuCard(
                   icon: Icons.schedule,
                   title: "Schedule",
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ScheduleStudentPage()),
+                    );
+                  },
                 ),
 
 
+                // _menuCard(
+                //   icon: Icons.analytics,
+                //   title: "Reports",
+                //   onTap: () {},
+                // ),
+
                 _menuCard(
-                  icon: Icons.analytics,
-                  title: "Reports",
-                  onTap: () {},
+                  icon: Icons.shopping_cart,
+                  title: "MarketPoin",
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => MarketplacePage(),
+                      ),
+                    );
+                  },
                 ),
 
               ],
